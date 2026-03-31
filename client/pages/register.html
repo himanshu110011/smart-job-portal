@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Smart Job Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>SmartJob</span> Portal
+            </a>
+            <div class="nav-links">
+                <a href="login.html">Sign In</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="auth-wrapper">
+        <div class="glass-panel auth-card">
+            <div class="auth-header">
+                <h2>Create Account</h2>
+                <p>Join the smart way to get hired</p>
+            </div>
+            
+            <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+                <button type="button" class="btn btn-primary" id="btnCandidate" style="flex:1" onclick="selectRole('Candidate')">Candidate</button>
+                <button type="button" class="btn btn-outline" id="btnRecruiter" style="flex:1" onclick="selectRole('Recruiter')">Recruiter</button>
+            </div>
+
+            <form id="registerForm">
+                <input type="hidden" id="role" value="Candidate">
+                
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" placeholder="John Doe" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="john@example.com" required>
+                </div>
+                
+                <div class="form-group" id="companyGroup" style="display: none;">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" id="companyName" class="form-control" placeholder="Tech Innovations Inc.">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary mt-1" style="width: 100%;">Create Account</button>
+                
+                <p class="text-center mt-3" style="font-size: 0.9rem;">
+                    Already have an account? <a href="login.html" style="color: var(--primary); text-decoration: none;">Login here</a>
+                </p>
+            </form>
+        </div>
+    </main>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Check URL for recruiter type intent
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('type') === 'recruiter') {
+            selectRole('Recruiter');
+        }
+
+        function selectRole(role) {
+            document.getElementById('role').value = role;
+            const cBtn = document.getElementById('btnCandidate');
+            const rBtn = document.getElementById('btnRecruiter');
+            const compGroup = document.getElementById('companyGroup');
+            const compInput = document.getElementById('companyName');
+
+            if(role === 'Candidate') {
+                cBtn.className = 'btn btn-primary';
+                rBtn.className = 'btn btn-outline';
+                compGroup.style.display = 'none';
+                compInput.required = false;
+            } else {
+                rBtn.className = 'btn btn-primary';
+                cBtn.className = 'btn btn-outline';
+                compGroup.style.display = 'block';
+                compInput.required = true;
+            }
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.innerText;
+            btn.innerText = 'Creating account...';
+            btn.disabled = true;
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            const companyName = document.getElementById('companyName').value;
+
+            const payload = { name, email, password, role };
+            if(role === 'Recruiter') payload.companyName = companyName;
+
+            try {
+                const res = await Api.Auth.register(payload);
+                localStorage.setItem('token', res.token);
+                localStorage.setItem('role', res.user.role);
+                localStorage.setItem('userId', res.user.id);
+                localStorage.setItem('userName', res.user.name);
+                
+                Toast.show('Registration successful!');
+                window.location.href = res.user.role === 'Candidate' 
+                    ? 'candidate-dashboard.html' 
+                    : 'recruiter-dashboard.html';
+            } catch (err) {
+                Toast.show(err.message, 'error');
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

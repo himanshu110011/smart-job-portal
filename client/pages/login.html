@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Smart Job Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>SmartJob</span> Portal
+            </a>
+            <div class="nav-links">
+                <a href="register.html">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="auth-wrapper">
+        <div class="glass-panel auth-card">
+            <div class="auth-header">
+                <h2>Welcome Back</h2>
+                <p>Login to your portal account</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary mt-1" style="width: 100%;">Sign In</button>
+                
+                <p class="text-center mt-3" style="font-size: 0.9rem;">
+                    Don't have an account? <a href="register.html" style="color: var(--primary); text-decoration: none;">Register here</a>
+                </p>
+            </form>
+        </div>
+    </main>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Signing in...';
+            btn.disabled = true;
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await Api.Auth.login({ email, password });
+                localStorage.setItem('token', res.token);
+                localStorage.setItem('role', res.user.role);
+                localStorage.setItem('userId', res.user.id);
+                localStorage.setItem('userName', res.user.name);
+                
+                Toast.show('Login successful!');
+                window.location.href = res.user.role === 'Candidate' 
+                    ? 'candidate-dashboard.html' 
+                    : 'recruiter-dashboard.html';
+            } catch (err) {
+                Toast.show(err.message, 'error');
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

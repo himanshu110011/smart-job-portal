@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Job Portal | AI-Powered Recommendations</title>
+    <meta name="description" content="AI-Powered Smart Job Portal to connect students and freshers with right jobs using skill matching.">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>SmartJob</span> Portal
+            </a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="pages/login.html" class="btn btn-outline" style="padding: 6px 16px;">Login</a>
+                <a href="pages/register.html" class="btn btn-primary" style="padding: 6px 16px;">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Find jobs that perfectly match your skills, instantly.</h1>
+            <p>Our AI-powered portal extracts your actual skills from your resume and matches you with top tech companies dynamically. Stop blindly searching—start matching.</p>
+            <div class="hero-btns">
+                <a href="pages/register.html" class="btn btn-primary">Get Started as Candidate</a>
+                <a href="pages/register.html?type=recruiter" class="btn btn-outline">I'm a Recruiter</a>
+            </div>
+        </section>
+
+        <section id="features" class="mt-4 mb-4">
+            <h2 class="text-center mb-4">How it works</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px;">
+                <div class="glass-panel" style="padding: 32px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: var(--primary); margin-bottom: 16px;">📄</div>
+                    <h3>1. Upload Resume</h3>
+                    <p class="mt-2">Simply upload your PDF resume. We intelligently parse and extract your core technical skills and qualifications.</p>
+                </div>
+                <div class="glass-panel" style="padding: 32px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: var(--secondary); margin-bottom: 16px;">🤖</div>
+                    <h3>2. Smart Matching</h3>
+                    <p class="mt-2">Our matching logic compares your extracted skills to thousands of verified job scopes instantly.</p>
+                </div>
+                <div class="glass-panel" style="padding: 32px; text-align: center;">
+                    <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 16px;">🚀</div>
+                    <h3>3. Get Hired</h3>
+                    <p class="mt-2">Apply with one click on high matching jobs to land your dream career sooner than ever.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="padding: 40px 0;text-align: center; border-top: 1px solid var(--border); margin-top: auto;">
+        <p>Smart Job Portal Mini Project &copy; 2026. Made by Team.</p>
+    </footer>
+
+    <script src="./js/api.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>

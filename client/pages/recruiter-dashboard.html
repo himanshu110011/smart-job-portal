@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard | Smart Job Portal</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="recruiter-dashboard.html" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>SmartJob</span> Portal <span style="font-size: 0.8rem; background: var(--secondary); padding: 2px 8px; border-radius: 12px; font-weight: 500;">Recruiter</span>
+            </a>
+            <div class="nav-links">
+                <span style="color: var(--text-muted); margin-right: 12px;" id="userWelcome">Hi, HR</span>
+                <a href="#" class="btn btn-outline logout-btn" style="padding: 6px 16px;">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <div class="glass-panel">
+                    <div class="sidebar-nav">
+                        <a href="#overview" class="sidebar-link active" onclick="switchTab('overview', this)">
+                            <span>📊</span> Overview
+                        </a>
+                        <a href="#post-job" class="sidebar-link" onclick="switchTab('post-job', this)">
+                            <span>➕</span> Post a Job
+                        </a>
+                        <a href="#active-jobs" class="sidebar-link" onclick="switchTab('active-jobs', this)">
+                            <span>📋</span> My Job Listings
+                        </a>
+                        <a href="#applicants" class="sidebar-link" onclick="switchTab('applicants', this)">
+                            <span>👥</span> Track Applicants
+                        </a>
+                        <a href="trends.html" class="sidebar-link">
+                            <span>📈</span> Market Skill Trends
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="dashboard-content">
+                <!-- Overview Section -->
+                <div id="overview-tab" class="tab-content" style="display: block;">
+                    <h2>Recruiter Overview</h2>
+                    <p class="mb-4">Monitor your active job postings and candidate pipelines efficiently.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px;">
+                        <div class="glass-panel" style="padding: 24px; text-align: center;">
+                            <h3 style="font-size: 2.5rem; color: var(--primary);">2</h3>
+                            <p>Active Job Posts</p>
+                        </div>
+                        <div class="glass-panel" style="padding: 24px; text-align: center;">
+                            <h3 style="font-size: 2.5rem; color: var(--secondary);">14</h3>
+                            <p>Total Applicants</p>
+                        </div>
+                        <div class="glass-panel" style="padding: 24px; text-align: center;">
+                            <h3 style="font-size: 2.5rem; color: var(--accent);">3</h3>
+                            <p>High Matches (>80%)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Post Job Section -->
+                <div id="post-job-tab" class="tab-content" style="display: none;">
+                    <h2>Post a New Job</h2>
+                    <p class="mb-4">Create a job listing and let our AI find the best candidates based on skills.</p>
+                    
+                    <div class="glass-panel" style="padding: 32px;">
+                        <form id="postJobForm">
+                            <div class="form-group">
+                                <label for="jobTitle">Job Title</label>
+                                <input type="text" id="jobTitle" class="form-control" placeholder="e.g. Senior Backend Engineer" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="jobDesc">Job Description</label>
+                                <textarea id="jobDesc" class="form-control" rows="5" placeholder="Describe the responsibilities..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="reqSkills">Required Skills (Comma separated)</label>
+                                <input type="text" id="reqSkills" class="form-control" placeholder="Node.js, MongoDB, Express, API Design" required>
+                                <p style="font-size: 0.8rem; margin-top: 6px;">Our AI uses these exact skills to match candidate resumes.</p>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mt-2">Publish Job Listing</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Active Jobs Section -->
+                <div id="active-jobs-tab" class="tab-content" style="display: none;">
+                    <h2>My Active Jobs</h2>
+                    <div class="jobs-grid mt-3">
+                        <div class="glass-panel job-card">
+                            <div class="job-title">Software Engineer</div>
+                            <div class="company-name mb-2">Tech Innovations Inc.</div>
+                            <div class="skills-list mb-3">
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">Node</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 16px;">
+                                <span style="font-size: 0.9rem; color: var(--text-muted);">8 Applicants</span>
+                                <button class="btn btn-outline" style="padding: 4px 12px;" onclick="switchTab('applicants', document.querySelector('.sidebar-link[href=\'#applicants\']'))">View</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Applicants Section -->
+                <div id="applicants-tab" class="tab-content" style="display: none;">
+                    <h2>Candidate Pipeline</h2>
+                    <p class="mb-4">Review AI-matched candidates for your active roles.</p>
+                    
+                    <div class="glass-panel" style="padding: 24px;">
+                        <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid var(--border);">
+                                    <th style="padding: 12px 8px;">Candidate Name</th>
+                                    <th style="padding: 12px 8px;">Applied For</th>
+                                    <th style="padding: 12px 8px;">AI Match Score</th>
+                                    <th style="padding: 12px 8px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 16px 8px;">John Doe</td>
+                                    <td style="padding: 16px 8px;">Software Engineer</td>
+                                    <td style="padding: 16px 8px;"><span class="match-badge">92% Match</span></td>
+                                    <td style="padding: 16px 8px;">
+                                        <button class="btn btn-primary" style="padding: 4px 12px; font-size: 0.85rem;">View Resume</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem('userName');
+            if(userName) document.getElementById('userWelcome').innerText = `Hi, ${userName}`;
+        });
+
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(`${tabId}-tab`).style.display = 'block';
+            el.classList.add('active');
+        }
+
+        document.getElementById('postJobForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Publishing...';
+            btn.disabled = true;
+
+            const title = document.getElementById('jobTitle').value;
+            const description = document.getElementById('jobDesc').value;
+            const skillsRaw = document.getElementById('reqSkills').value;
+            
+            const requiredSkills = skillsRaw.split(',').map(s => s.trim().toLowerCase());
+
+            try {
+                // Mock behavior until DB works
+                setTimeout(() => {
+                    Toast.show('Job published successfully!');
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    e.target.reset();
+                    switchTab('active-jobs', document.querySelector('.sidebar-link[href=\'#active-jobs\']'));
+                }, 1000);
+
+                // Actual API call:
+                // await Api.Recruiter.postJob({ title, description, requiredSkills });
+            } catch (err) {
+                Toast.show(err.message, 'error');
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
