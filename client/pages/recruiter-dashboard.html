@@ -162,6 +162,9 @@
             
             document.getElementById(`${tabId}-tab`).style.display = 'block';
             el.classList.add('active');
+
+            if (tabId === 'active-jobs') fetchActiveJobs();
+            if (tabId === 'applicants') fetchAllApplicants();
         }
 
         document.getElementById('postJobForm').addEventListener('submit', async (e) => {
@@ -178,23 +181,78 @@
             const requiredSkills = skillsRaw.split(',').map(s => s.trim().toLowerCase());
 
             try {
-                // Mock behavior until DB works
-                setTimeout(() => {
-                    Toast.show('Job published successfully!');
-                    btn.innerText = originalText;
-                    btn.disabled = false;
-                    e.target.reset();
-                    switchTab('active-jobs', document.querySelector('.sidebar-link[href=\'#active-jobs\']'));
-                }, 1000);
-
-                // Actual API call:
-                // await Api.Recruiter.postJob({ title, description, requiredSkills });
+                // Actual API call
+                await Api.Recruiter.postJob({ title, description, requiredSkills });
+                
+                Toast.show('Job published successfully!');
+                btn.innerText = originalText;
+                btn.disabled = false;
+                e.target.reset();
+                switchTab('active-jobs', document.querySelector('.sidebar-link[href=\'#active-jobs\']'));
             } catch (err) {
                 Toast.show(err.message, 'error');
                 btn.innerText = originalText;
                 btn.disabled = false;
             }
         });
+
+        async function fetchActiveJobs() {
+            try {
+                const jobs = await Api.Recruiter.getJobs();
+                const container = document.querySelector('#active-jobs-tab .jobs-grid');
+                if (!jobs || jobs.length === 0) {
+                    container.innerHTML = '<div class="glass-panel" style="padding: 24px;"><p>No active job listings found.</p></div>';
+                    return;
+                }
+                
+                container.innerHTML = jobs.map(job => `
+                    <div class="glass-panel job-card">
+                        <div class="job-title">${job.title}</div>
+                        <div class="company-name mb-2">Active Listing</div>
+                        <div class="skills-list mb-3">
+                            ${job.requiredSkills.map(s => `<span class="skill-tag">${s}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                Toast.show('Failed to fetch jobs', 'error');
+            }
+        }
+
+        async function fetchAllApplicants() {
+            try {
+                const jobs = await Api.Recruiter.getJobs();
+                let tbody = document.querySelector('#applicants-tab tbody');
+                tbody.innerHTML = '';
+                
+                let foundAny = false;
+                
+                for (const job of jobs) {
+                    const apps = await Api.Recruiter.getJobApplications(job._id);
+                    if (apps && apps.length > 0) {
+                        foundAny = true;
+                        apps.forEach(app => {
+                            tbody.innerHTML += `
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 16px 8px;">${app.candidate.user.name}</td>
+                                    <td style="padding: 16px 8px;">${job.title}</td>
+                                    <td style="padding: 16px 8px;"><span class="match-badge">${app.matchPercentage}% Match</span></td>
+                                    <td style="padding: 16px 8px;">
+                                        <a href="/${app.candidate.resumeUrl}" target="_blank" class="btn btn-primary" style="padding: 4px 12px; font-size: 0.85rem; text-decoration: none;">View Resume</a>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    }
+                }
+                
+                if (!foundAny) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="padding: 16px;">No applications found.</td></tr>';
+                }
+            } catch (err) {
+                Toast.show('Failed to fetch applicants', 'error');
+            }
+        }
     </script>
 </body>
 </html>

@@ -4,7 +4,8 @@ const fs = require('fs');
 const Candidate = require('../models/Candidate');
 const Job = require('../models/Job');
 const Application = require('../models/Application');
-const { parseResumeFile, calculateMatchPercentage } = require('../ai/parser');
+const { parseResumeFile } = require('../ai/parser');
+const { calculateMatchScore, rankJobsForCandidate } = require('../ai/jobMatcher');
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -64,18 +65,7 @@ const getRecommendations = async (req, res) => {
 
         const activeJobs = await Job.find({ isActive: true }).populate('recruiter', 'companyName');
         
-        let recommendations = activeJobs.map(job => {
-            const matchScore = calculateMatchPercentage(candidate.skills, job.requiredSkills);
-            return {
-                job,
-                matchScore
-            };
-        });
-
-        // Filter and Sort by highest match > 20%
-        recommendations = recommendations
-            .filter(r => r.matchScore > 20)
-            .sort((a, b) => b.matchScore - a.matchScore);
+        const recommendations = rankJobsForCandidate(candidate.skills, activeJobs, 20);
 
         res.json(recommendations);
     } catch (error) {
@@ -97,7 +87,7 @@ const applyJob = async (req, res) => {
         const exists = await Application.findOne({ candidate: candidate._id, job: job._id });
         if(exists) return res.status(400).json({ message: 'Already applied' });
 
-        const matchScore = calculateMatchPercentage(candidate.skills, job.requiredSkills);
+        const matchScore = calculateMatchScore(candidate.skills, job.requiredSkills);
 
         const application = await Application.create({
             candidate: candidate._id,

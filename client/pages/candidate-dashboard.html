@@ -159,23 +159,23 @@
             btn.disabled = true;
 
             try {
-                // Mock API Call for UI until backend is connected
-                setTimeout(() => {
-                    Toast.show('Resume uploaded & parsed successfully!');
-                    document.getElementById('resumeStatusText').innerHTML = '✅ Resume uploaded successfully. Your skills matching is active.';
-                    document.getElementById('skillsContainer').innerHTML = `
-                        <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">React.js</span>
-                        <span class="skill-tag">Node.js</span>
-                        <span class="skill-tag">MongoDB</span>
-                    `;
-                    btn.innerText = 'Update Resume';
-                    btn.disabled = false;
-                }, 1500);
-
-                // Actual API call when backend is hot
-                // await Api.Candidate.uploadResume(formData);
-                // fetchRecommendations
+                // Actual API call
+                const res = await Api.Candidate.uploadResume(formData);
+                
+                Toast.show(res.message || 'Resume uploaded & parsed successfully!');
+                document.getElementById('resumeStatusText').innerHTML = '✅ Resume uploaded successfully. Your skills matching is active.';
+                
+                if (res.skills && res.skills.length > 0) {
+                    document.getElementById('skillsContainer').innerHTML = res.skills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+                } else {
+                    document.getElementById('skillsContainer').innerHTML = '<span style="color: var(--text-muted);">No distinct skills extracted from this document.</span>';
+                }
+                
+                btn.innerText = 'Update Resume';
+                btn.disabled = false;
+                
+                // Automatically fetch recommendations after upload
+                fetchRecommendations();
             } catch (err) {
                 Toast.show(err.message, 'error');
                 btn.innerText = 'Analyze and Upload Resume';
@@ -184,26 +184,49 @@
         });
 
         async function fetchRecommendations() {
-            // Mock recommendations array for UI testing
-            const container = document.getElementById('recommendationsContainer');
-            container.innerHTML = `
-                <div class="glass-panel job-card">
-                    <div class="job-card-header">
-                        <div>
-                            <h3 class="job-title">Frontend Developer</h3>
-                            <div class="company-name">Tech Innovations Inc.</div>
+            try {
+                const recommendations = await Api.Candidate.getRecommendations();
+                const container = document.getElementById('recommendationsContainer');
+                
+                if (!recommendations || recommendations.length === 0) {
+                    container.innerHTML = `
+                        <div class="glass-panel" style="padding: 32px; text-align: center; grid-column: 1/-1;">
+                            <p>No matching jobs found yet or you haven't uploaded a resume.</p>
                         </div>
-                        <span class="match-badge">85% Match</span>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = recommendations.map(rec => `
+                    <div class="glass-panel job-card">
+                        <div class="job-card-header">
+                            <div>
+                                <h3 class="job-title">${rec.job.title}</h3>
+                                <div class="company-name">${rec.job.recruiter?.companyName || 'Company'}</div>
+                            </div>
+                            <span class="match-badge">${rec.matchScore}% Match</span>
+                        </div>
+                        <p style="font-size: 0.9rem; margin-bottom: 16px;">${rec.job.description.substring(0, 100)}...</p>
+                        <div class="skills-list mb-3">
+                            ${rec.job.requiredSkills.map(s => `<span class="skill-tag">${s}</span>`).join('')}
+                        </div>
+                        <button class="btn btn-outline" style="width: 100%; border-color: var(--primary); color: var(--primary);" onclick="applyForJob('${rec.job._id}')">Easy Apply</button>
                     </div>
-                    <p style="font-size: 0.9rem; margin-bottom: 16px;">We are looking for a skilled UI developer experienced with React.js and modern CSS features...</p>
-                    <div class="skills-list mb-3">
-                        <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">React.js</span>
-                        <span class="skill-tag">HTML/CSS</span>
-                    </div>
-                    <button class="btn btn-outline" style="width: 100%; border-color: var(--primary); color: var(--primary);" onclick="Toast.show('Applied successfully')">Easy Apply</button>
-                </div>
-            `;
+                `).join('');
+            } catch (err) {
+                console.error(err);
+                const container = document.getElementById('recommendationsContainer');
+                container.innerHTML = `<div style="color: var(--danger); text-align:center; padding: 20px;">Failed to load job recommendations</div>`;
+            }
+        }
+
+        async function applyForJob(jobId) {
+            try {
+                await Api.Candidate.applyJob(jobId);
+                Toast.show('Applied successfully!');
+            } catch(err) {
+                Toast.show(err.message, 'error');
+            }
         }
     </script>
 </body>

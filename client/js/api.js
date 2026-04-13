@@ -51,7 +51,9 @@ const Api = {
     Auth: {
         login: (credentials) => apiClient('/auth/login', { method: 'POST', body: credentials }),
         register: (userData) => apiClient('/auth/register', { method: 'POST', body: userData }),
-        getProfile: () => apiClient('/auth/me')
+        getProfile: () => apiClient('/auth/me'),
+        forgotPassword: (email) => apiClient('/auth/forgotpassword', { method: 'POST', body: { email } }),
+        resetPassword: (token, password) => apiClient(`/auth/resetpassword/${token}`, { method: 'PUT', body: { password } })
     },
     Candidate: {
         uploadResume: (formData) => apiClient('/candidate/upload', { method: 'POST', body: formData }),
