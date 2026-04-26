@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recruiter Dashboard | Smart Job Portal</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
 
     <nav class="navbar">
         <div class="container">
             <a href="recruiter-dashboard.html" class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
                 </svg>
-                <span>SmartJob</span> Portal <span style="font-size: 0.8rem; background: var(--secondary); padding: 2px 8px; border-radius: 12px; font-weight: 500;">Recruiter</span>
+                <span>SmartJob</span> Portal <span
+                    style="font-size: 0.8rem; background: var(--secondary); padding: 2px 8px; border-radius: 12px; font-weight: 500;">Recruiter</span>
             </a>
             <div class="nav-links">
                 <span style="color: var(--text-muted); margin-right: 12px;" id="userWelcome">Hi, HR</span>
@@ -52,18 +56,18 @@
                 <div id="overview-tab" class="tab-content" style="display: block;">
                     <h2>Recruiter Overview</h2>
                     <p class="mb-4">Monitor your active job postings and candidate pipelines efficiently.</p>
-                    
+
                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 32px;">
                         <div class="glass-panel" style="padding: 24px; text-align: center;">
-                            <h3 style="font-size: 2.5rem; color: var(--primary);">2</h3>
+                            <h3 id="stat-active-jobs" style="font-size: 2.5rem; color: var(--primary);">0</h3>
                             <p>Active Job Posts</p>
                         </div>
                         <div class="glass-panel" style="padding: 24px; text-align: center;">
-                            <h3 style="font-size: 2.5rem; color: var(--secondary);">14</h3>
+                            <h3 id="stat-total-applicants" style="font-size: 2.5rem; color: var(--secondary);">0</h3>
                             <p>Total Applicants</p>
                         </div>
                         <div class="glass-panel" style="padding: 24px; text-align: center;">
-                            <h3 style="font-size: 2.5rem; color: var(--accent);">3</h3>
+                            <h3 id="stat-high-matches" style="font-size: 2.5rem; color: var(--accent);">0</h3>
                             <p>High Matches (>80%)</p>
                         </div>
                     </div>
@@ -73,23 +77,27 @@
                 <div id="post-job-tab" class="tab-content" style="display: none;">
                     <h2>Post a New Job</h2>
                     <p class="mb-4">Create a job listing and let our AI find the best candidates based on skills.</p>
-                    
+
                     <div class="glass-panel" style="padding: 32px;">
                         <form id="postJobForm">
                             <div class="form-group">
                                 <label for="jobTitle">Job Title</label>
-                                <input type="text" id="jobTitle" class="form-control" placeholder="e.g. Senior Backend Engineer" required>
+                                <input type="text" id="jobTitle" class="form-control"
+                                    placeholder="e.g. Senior Backend Engineer" required>
                             </div>
-                            
+
                             <div class="form-group">
                                 <label for="jobDesc">Job Description</label>
-                                <textarea id="jobDesc" class="form-control" rows="5" placeholder="Describe the responsibilities..." required></textarea>
+                                <textarea id="jobDesc" class="form-control" rows="5"
+                                    placeholder="Describe the responsibilities..." required></textarea>
                             </div>
 
                             <div class="form-group">
                                 <label for="reqSkills">Required Skills (Comma separated)</label>
-                                <input type="text" id="reqSkills" class="form-control" placeholder="Node.js, MongoDB, Express, API Design" required>
-                                <p style="font-size: 0.8rem; margin-top: 6px;">Our AI uses these exact skills to match candidate resumes.</p>
+                                <input type="text" id="reqSkills" class="form-control"
+                                    placeholder="Node.js, MongoDB, Express, API Design" required>
+                                <p style="font-size: 0.8rem; margin-top: 6px;">Our AI uses these exact skills to match
+                                    candidate resumes.</p>
                             </div>
 
                             <button type="submit" class="btn btn-primary mt-2">Publish Job Listing</button>
@@ -108,9 +116,11 @@
                                 <span class="skill-tag">React</span>
                                 <span class="skill-tag">Node</span>
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 16px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 16px;">
                                 <span style="font-size: 0.9rem; color: var(--text-muted);">8 Applicants</span>
-                                <button class="btn btn-outline" style="padding: 4px 12px;" onclick="switchTab('applicants', document.querySelector('.sidebar-link[href=\'#applicants\']'))">View</button>
+                                <button class="btn btn-outline" style="padding: 4px 12px;"
+                                    onclick="switchTab('applicants', document.querySelector('.sidebar-link[href=\'#applicants\']'))">View</button>
                             </div>
                         </div>
                     </div>
@@ -120,7 +130,7 @@
                 <div id="applicants-tab" class="tab-content" style="display: none;">
                     <h2>Candidate Pipeline</h2>
                     <p class="mb-4">Review AI-matched candidates for your active roles.</p>
-                    
+
                     <div class="glass-panel" style="padding: 24px;">
                         <table style="width: 100%; text-align: left; border-collapse: collapse;">
                             <thead>
@@ -132,14 +142,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                                    <td style="padding: 16px 8px;">John Doe</td>
-                                    <td style="padding: 16px 8px;">Software Engineer</td>
-                                    <td style="padding: 16px 8px;"><span class="match-badge">92% Match</span></td>
-                                    <td style="padding: 16px 8px;">
-                                        <button class="btn btn-primary" style="padding: 4px 12px; font-size: 0.85rem;">View Resume</button>
-                                    </td>
-                                </tr>
+                                <!-- Candidates will be populated here via JavaScript -->
                             </tbody>
                         </table>
                     </div>
@@ -153,18 +156,45 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const userName = localStorage.getItem('userName');
-            if(userName) document.getElementById('userWelcome').innerText = `Hi, ${userName}`;
+            if (userName) document.getElementById('userWelcome').innerText = `Hi, ${userName}`;
+            fetchOverviewStats();
         });
 
         function switchTab(tabId, el) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
             document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
-            
+
             document.getElementById(`${tabId}-tab`).style.display = 'block';
             el.classList.add('active');
 
+            if (tabId === 'overview') fetchOverviewStats();
             if (tabId === 'active-jobs') fetchActiveJobs();
             if (tabId === 'applicants') fetchAllApplicants();
+        }
+
+        async function fetchOverviewStats() {
+            try {
+                const jobs = await Api.Recruiter.getJobs();
+                if (!jobs) return;
+
+                const activeJobsCount = jobs.length;
+                let totalApplicants = 0;
+                let highMatches = 0;
+
+                for (const job of jobs) {
+                    const apps = await Api.Recruiter.getJobApplications(job._id);
+                    if (apps && apps.length > 0) {
+                        totalApplicants += apps.length;
+                        highMatches += apps.filter(app => app.matchPercentage > 80).length;
+                    }
+                }
+
+                document.getElementById('stat-active-jobs').innerText = activeJobsCount;
+                document.getElementById('stat-total-applicants').innerText = totalApplicants;
+                document.getElementById('stat-high-matches').innerText = highMatches;
+            } catch (err) {
+                console.error('Failed to fetch overview stats', err);
+            }
         }
 
         document.getElementById('postJobForm').addEventListener('submit', async (e) => {
@@ -177,13 +207,13 @@
             const title = document.getElementById('jobTitle').value;
             const description = document.getElementById('jobDesc').value;
             const skillsRaw = document.getElementById('reqSkills').value;
-            
+
             const requiredSkills = skillsRaw.split(',').map(s => s.trim().toLowerCase());
 
             try {
                 // Actual API call
                 await Api.Recruiter.postJob({ title, description, requiredSkills });
-                
+
                 Toast.show('Job published successfully!');
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -204,7 +234,7 @@
                     container.innerHTML = '<div class="glass-panel" style="padding: 24px;"><p>No active job listings found.</p></div>';
                     return;
                 }
-                
+
                 container.innerHTML = jobs.map(job => `
                     <div class="glass-panel job-card">
                         <div class="job-title">${job.title}</div>
@@ -224,9 +254,9 @@
                 const jobs = await Api.Recruiter.getJobs();
                 let tbody = document.querySelector('#applicants-tab tbody');
                 tbody.innerHTML = '';
-                
+
                 let foundAny = false;
-                
+
                 for (const job of jobs) {
                     const apps = await Api.Recruiter.getJobApplications(job._id);
                     if (apps && apps.length > 0) {
@@ -245,7 +275,7 @@
                         });
                     }
                 }
-                
+
                 if (!foundAny) {
                     tbody.innerHTML = '<tr><td colspan="4" style="padding: 16px;">No applications found.</td></tr>';
                 }
@@ -255,4 +285,5 @@
         }
     </script>
 </body>
+
 </html>

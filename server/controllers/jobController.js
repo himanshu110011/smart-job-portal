@@ -47,7 +47,7 @@ const getJobApplications = async (req, res) => {
   try {
     const recruiter = await Recruiter.findOne({ user: req.user._id });
     const job = await Job.findOne({ _id: req.params.id, recruiter: recruiter._id });
-    
+
     if (!job) {
       return res.status(404).json({ message: 'Job not found or unauthorized' });
     }

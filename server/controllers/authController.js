@@ -3,6 +3,32 @@ const Candidate = require('../models/Candidate');
 const Recruiter = require('../models/Recruiter');
 const jwt = require('jsonwebtoken');
 
+// @desc    Get user profile
+// @route   GET /api/auth/me
+// @access  Private
+const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    let profileData = {};
+    if (user.role === 'Candidate') {
+      profileData = await Candidate.findOne({ user: user._id });
+    } else if (user.role === 'Recruiter') {
+      profileData = await Recruiter.findOne({ user: user._id });
+    }
+
+    res.json({
+      user,
+      profile: profileData
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET || 'fallback_secret_key', {
     expiresIn: '30d',
@@ -144,4 +170,4 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, forgotPassword, resetPassword };
+module.exports = { registerUser, loginUser, forgotPassword, resetPassword, getProfile };

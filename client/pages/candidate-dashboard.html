@@ -126,8 +126,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             const userName = localStorage.getItem('userName');
             if(userName) document.getElementById('userWelcome').innerText = `Hi, ${userName}`;
-            
-            // Initial UI update fetching user profile could go here
+            // Initial UI update fetching user profile
+            Api.Auth.getProfile().then(res => {
+                if(res && res.profile && res.profile.skills && res.profile.skills.length > 0) {
+                    document.getElementById('skillsContainer').innerHTML = res.profile.skills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+                    document.getElementById('resumeStatusText').innerHTML = '✅ Resume uploaded successfully. Your skills matching is active.';
+                }
+            }).catch(e => console.error('Failed to get profile', e));
         });
 
         function switchTab(tabId, el) {
@@ -138,6 +143,7 @@
             el.classList.add('active');
 
             if(tabId === 'matches') fetchRecommendations();
+            if(tabId === 'applications') fetchMyApplications();
         }
 
         document.getElementById('resumeFile').addEventListener('change', (e) => {
@@ -226,6 +232,31 @@
                 Toast.show('Applied successfully!');
             } catch(err) {
                 Toast.show(err.message, 'error');
+            }
+        }
+
+        async function fetchMyApplications() {
+            try {
+                const applications = await Api.Candidate.getMyApplications();
+                const container = document.getElementById('applicationsContainer');
+                
+                if (!applications || applications.length === 0) {
+                    container.innerHTML = '<tr><td colspan="4" class="text-center" style="padding: 24px; color: var(--text-muted);">No applications found yet.</td></tr>';
+                    return;
+                }
+                
+                container.innerHTML = applications.map(app => `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 16px 8px;">${app.job.title}</td>
+                        <td style="padding: 16px 8px;">${app.job.recruiter?.companyName || 'Company'}</td>
+                        <td style="padding: 16px 8px;">${new Date(app.createdAt).toLocaleDateString()}</td>
+                        <td style="padding: 16px 8px;"><span style="background: rgba(46, 196, 182, 0.2); color: var(--secondary); padding: 4px 12px; border-radius: 12px; font-size: 0.85rem;">Applied</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+                const container = document.getElementById('applicationsContainer');
+                container.innerHTML = '<tr><td colspan="4" class="text-center" style="padding: 24px; color: var(--danger);">Failed to load applications.</td></tr>';
             }
         }
     </script>

@@ -3,7 +3,7 @@ const API_URL = 'http://localhost:5000/api';
 // Utility for making API requests with automatically injected auth tokens
 async function apiClient(endpoint, { method = 'GET', body, headers = {} } = {}) {
     const token = localStorage.getItem('token');
-    
+
     // Default headers
     const reqHeaders = {
         'Content-Type': 'application/json',
@@ -34,11 +34,11 @@ async function apiClient(endpoint, { method = 'GET', body, headers = {} } = {}) 
     try {
         const response = await fetch(`${API_URL}${endpoint}`, options);
         const data = await response.json().catch(() => ({}));
-        
+
         if (!response.ok) {
             throw new Error(data.message || response.statusText || 'API Request Failed');
         }
-        
+
         return data;
     } catch (error) {
         console.error('API Client Error:', error);
@@ -58,11 +58,12 @@ const Api = {
     Candidate: {
         uploadResume: (formData) => apiClient('/candidate/upload', { method: 'POST', body: formData }),
         getRecommendations: () => apiClient('/candidate/recommendations'),
-        applyJob: (jobId) => apiClient('/candidate/apply', { method: 'POST', body: { jobId } })
+        applyJob: (jobId) => apiClient('/candidate/apply', { method: 'POST', body: { jobId } }),
+        getMyApplications: () => apiClient('/candidate/applications')
     },
     Recruiter: {
         postJob: (jobData) => apiClient('/jobs', { method: 'POST', body: jobData }),
-        getJobs: () => apiClient('/jobs'),
+        getJobs: () => apiClient('/jobs/me'),
         getJobApplications: (jobId) => apiClient(`/jobs/${jobId}/applications`)
     }
 };
