@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 // Utility for making API requests with automatically injected auth tokens
 async function apiClient(endpoint, { method = 'GET', body, headers = {} } = {}) {
